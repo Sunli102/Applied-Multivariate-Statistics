@@ -1,8 +1,8 @@
 # import dataset
-vowel_train = read.table('~/GSU/2019 Fall/Multivariate/CompleteDataSetsintheBook/data/vowel-train.txt', header = T, sep = ',')
+vowel_train = read.table('~/2019 Fall/Multivariate/data/vowel-train.txt', header = T, sep = ',')
 train = vowel_train[,3:12]
 
-vowel_test = read.table('~/GSU/2019 Fall/Multivariate/CompleteDataSetsintheBook/data/vowel-test.txt',header = T, sep = ',')
+vowel_test = read.table('~/2019 Fall/Multivariate/data/vowel-test.txt',header = T, sep = ',')
 test = vowel_test[,3:12]
 
 # standardize datasets
@@ -251,13 +251,6 @@ sampleTest = vowel_test[,2:12][(vowel_test$y == 1 | vowel_test$y == 3 | vowel_te
 sampleTrain['yy'] = rep(c(1,2,3,4),48)  
 sampleTest['yy'] = rep(c(1,2,3,4), 42)
 
-# ### complete linkage 
-# dist.eu = dist(sampleTrain[,2:11],'euclidean')
-# hc.eu.c = hclust(dist.eu, 'complete')
-# hc.eu.c$height
-# plot(hc.eu.c, hang = -1)
-# cutree(hc.eu.c, k= 4)
-
 
 ### ward's hierarchical clustering methods 
 dist.eu_train = dist(sampleTrain[,2:11],'euclidean')
@@ -265,9 +258,6 @@ hc.eu.w_train = hclust(dist.eu_train, 'ward.D2')
 plot(hc.eu.w_train, hang = -1)
 sampleTrain['wardClusters']=cutree(hc.eu.w_train, k= 4)
 mean(sampleTrain[,12] != sampleTrain[,13])  #[1] 0.25
-
-# plot(sampleTrain[,-c(1,12,13)], col = sampleTrain[,12], main = 'true clusters for Train')
-# plot(sampleTrain[,-c(1,12,13)], col = sampleTrain[,13], main = 'clusters from ward for Train')
 
 dist.eu_test = dist(sampleTest[,2:11],'euclidean')
 hc.eu.w_test = hclust(dist.eu_test, 'ward.D2')
@@ -283,18 +273,10 @@ sampleTrain.km = kmeans(sampleTrain[,2:11],4)
 sampleTrain['kmCluster'] = sampleTrain.km$cluster
 mean(sampleTrain[,12] != sampleTrain[,14])  #[1] 0.6875
 
-# plot(sampleTrain[,-c(1,12,13,14)], col = sampleTrain[,12], main = 'true clusters for Train')
-# plot(sampleTrain[,-c(1,12,13,14)], col = sampleTrain[,14], main = 'clusters from K-means for Train')
-# #points(sampleTrain.km_train$centers, col = 1:4, pch = 8, cex = 2)
-
 
 sampleTest.km = kmeans(sampleTest[,2:11],4)
 sampleTest['kmCluster'] = sampleTest.km$cluster
 mean(sampleTest[,12] != sampleTest[,14])  #[1] 0.8452381 #[1] 0.5416667 [1] 0.9702381 [1] 0.3452381
-
-# plot(sampleTest[,-c(1,12,13,14)], col = sampleTest[,12], main = 'true clusters for Test')
-# plot(sampleTest[,-c(1,12,13,14)], col = sampleTest[,14], main = 'clusters from K-means for Test')
-# # points(sampleTest.km_train$centers, col = 1:4, pch = 8, cex = 2)
 
 
 table(sampleTrain[,12], sampleTrain[,14])
@@ -376,14 +358,6 @@ F1 = function(table){
 }
 
 ####  tables for PCA are the same as previous
-# F1(PCA.lda_Train_table)
-# which.min(F1(PCA.lda_Train_table))  # 2
-# F1(PCA.lda_Test_table)
-# which.min(F1(PCA.lda_Test_table))   # 2 
-# F1(PCA.qda_Train_table)
-# which.min(F1(PCA.qda_Train_table))  # 2 
-# F1(PCA.qda_Test_table)
-# which.min(F1(PCA.qda_Test_table))   # 10
 F1(Full.lda_Train_table)
 which.min(F1(Full.lda_Train_table))  # 6 
 F1(Full.lda_Test_table)
@@ -428,10 +402,6 @@ points(centers, col = 11+as.integer(test.y), pch = 1, cex = 1,lwd = 5)
 
 ### select observation 2,6,8
 ## convert y from factor back to int. 
-## Otherwise factor level 2, 6, 8 are still in dataframe with none values
-## which will yield error for QDA:
-###### Error in qda.default(x, grouping, ...) : 
-###### some group is too small for 'qda'
 Train1$y = as.numeric(as.character(Train1$y))
 Test1$y = as.numeric(as.character(Test1$y))
 newTrain = Train1[!(Train1$y == 2 | Train1$y ==6 | Train1$y == 8),]
@@ -467,13 +437,6 @@ sampleTest = Test1[(Test1$y == 1 | Test1$y == 3 | Test1$y == 6 | Test1$y == 10),
 sampleTrain['yy'] = as.factor(rep(c(1,2,3,4),48))
 sampleTest['yy'] = as.factor(rep(c(1,2,3,4), 42))
 
-# ### complete linkage 
-# dist.eu = dist(sampleTrain[,2:11],'euclidean')
-# hc.eu.c = hclust(dist.eu, 'complete')
-# hc.eu.c$height
-# plot(hc.eu.c, hang = -1)
-# cutree(hc.eu.c, k= 4)
-
 
 ### ward's hierarchical clustering methods 
 dist.eu_train = dist(sampleTrain[,2:11],'euclidean')
@@ -481,7 +444,7 @@ hc.eu.w_train = hclust(dist.eu_train, 'ward.D2') #[1] 0.71875
 hc.eu.w_train = hclust(dist.eu_train, 'complete') # [1] 0.65625
 hc.eu.w_train = hclust(dist.eu_train, 'single') # 0.71875
 hc.eu.w_train = hclust(dist.eu_train, 'average') # [1] 0.84375
-# plot(hc.eu.w_train, hang = -1, main = 'Cluster for Training Data')
+
 sampleTrain['wardClusters']=cutree(hc.eu.w_train, k= 4)
 mean(sampleTrain[,12] != sampleTrain[,13])  #[1] 0.71875 (> 0.25)
 
@@ -491,7 +454,7 @@ hc.eu.w_test = hclust(dist.eu_test, 'ward.D2')  # [1] 0.5714286
 hc.eu.w_test = hclust(dist.eu_test, 'complete') #[1] 0.6964286
 hc.eu.w_test = hclust(dist.eu_test, 'single') # [1] 0.5714286
 hc.eu.w_test = hclust(dist.eu_test, 'average') # [1] 0.6964286
-# plot(hc.eu.w_test, hang = -1,main = 'Cluster for Test Data')
+
 sampleTest['wardClusters']=cutree(hc.eu.w_test, k= 4)
 mean(sampleTest[,12] != sampleTest[,13])  #[1] 0.5714286 (<0.7678571)
 
